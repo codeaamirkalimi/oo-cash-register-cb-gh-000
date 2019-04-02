@@ -1,26 +1,31 @@
 class CashRegister
 
-  def initialize(discount={})
+  attr_accessor :items, :discount, :total, :last_transaction
+
+  def initialize(discount=0)
     @total = 0
     @discount = discount
     @items = []
   end
 
-  attr_accessor :total, :discount, :last_trans_amount, :items
-
-  def add_item(title, price, quantity=nil)
-    previous = @total
-    @items << title
-    if quantity != nil
-      @total += price * quantity
-    else
-      @total += price
+  def add_item(title, amount, quantity=1)
+    self.total += amount * quantity
+    quantity.times do
+      items << title
     end
+    self.last_transaction = amount * quantity
   end
 
   def apply_discount
-    total = add_item
-    total = total - (discount * total)
+    if discount != 0
+      self.total = (total * ((100.0 - discount.to_f)/100)).to_i
+      "After the discount, the total comes to $#{self.total}."
+    else
+      "There is no discount to apply."
+    end
   end
 
+  def void_last_transaction
+    self.total = self.total - self.last_transaction
+  end
 end
